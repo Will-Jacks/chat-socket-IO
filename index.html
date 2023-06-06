@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WebChat.io</title>
-    <link rel="shortcut icon" href="imgs/chat.jpg" type="image/x-icon">
+    <link rel="shortcut icon" href="/imgs/chat.jpg" type="image/x-icon">
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -15,13 +15,34 @@
         <h1 id="titulo-principal">MyChat</h1>
     </header>
 
-    <main>
+    <main class="mensagens-container">
         <ul id="messages"></ul> <!--Aqui irão vir as futuras mensagens e se encaixarão nessas listas-->
-        <form action="">
-            <input type="text" autocomplete="off"> <button>Enviar</button>
+        <form action="#" id="form">
+            <input type="text" autocomplete="off" id="input"> <button>Enviar</button>
         </form>
 
     </main>
-    
+    <script>
+        var socket = io();
+
+            var messages = document.getElementById('messages');
+            var form = document.getElementById('form');
+            var input = document.getElementById('input');
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                if (input.value) {
+                    socket.emit('chat message', input.value);
+                    input.value = '';
+                }
+            });
+
+            socket.on('chat message', function (msg) {
+                var item = document.createElement('li');
+                item.textContent = msg;
+                messages.appendChild(item);
+                window.scrollTo(0, document.body.scrollHeight);
+            });
+    </script>
 </body>
 </html>
